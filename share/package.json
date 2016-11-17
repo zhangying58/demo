@@ -1,0 +1,36 @@
+{
+    "name": "zzactivity-ui",
+    "version": "1.0.0",
+    "description": "转转运营活动组件库",
+    "main": "fis-config.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prod": "rd/s/q dist && fis3 release prod",
+        "fis3": "fis3 server stop && fis3 server clean && fis3 server start && fis3 release -cwL"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "keywords": [
+    "fis3",
+    "zhuanzhuan",
+    "activity"
+  ],
+    "author": "zhuanzhuan",
+    "license": "ISC",
+    "dependencies": {
+        "fis-parser-less-2.x": "^0.1.4",
+        "fis3-postpackager-loader": "*",
+        "fis-spriter-csssprites-plus": "*",
+        "fis3-deploy-skip-packed": "*",
+        "fis3-deploy-ftp": "*",
+        "fis3-hook-amd": "*",
+        "fis-parser-node-sass": "*",
+        "fis3-lint-eslint": "*",
+        "fis-optimizer-html-minifier": "*",
+        "fis-parser-babel-5.x": "*",
+        "fis-postprocessor-autoprefixer": "*",
+        "chokidar": "^1.6.0"
+    }
+}

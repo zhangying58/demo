@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>各终端 分享 demo</title>
+    <link rel="dns-prefetch" href="//img.58cdn.com.cn">
+    <meta name="description" content="各终端 分享 demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="telephone=no,email=no" name="format-detection" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!--// 为保证微信分享正常调用，请将微信库放到 head 请求头里。-->
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #wrapper{
+            overflow: hidden;
+        }
+        #wrapper li {
+            padding: 5px 20px;
+            line-height: 30px;
+            text-align: center;
+            background: #666;
+            color: #fff;
+            margin:10px;
+        }
+        .none{
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- 页面容器 -->
+<div id="wrapper">
+    <ul>
+        <li class="share">分享<br/>（ zz / 58 / gj )</li>
+        <li class="diaoqi" onclick="ZZUTIL.diaoqi('web',location.href)">在转转中打开 调起</li>
+    </ul>
+</div>
+<script src="./lib/util.js"></script>
+<script>
+   // 加载js脚本
+    function loadScript(url, callback) {
+        var script = document.createElement("script")
+        script.type = "text/javascript";
+        script.onload = function() {
+            callback && callback();
+        };
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    };
+   // 调起转转用的js
+    loadScript('http://img.58cdn.com.cn/zhuanzhuan/zzactivity/activity-anniversary/lib/callapp.js');
+
+</script>
+<script src="http://img.58cdn.com.cn/zhuanzhuan/mzz/js/lib/zepto.min.js"></script>
+<script type="text/javascript">
+
+    // *判断终端加载相应js——app.js 一定要放到zepto库后面
+    if (ZZUTIL.platform === 'zz') {
+        loadScript('http://j2.58cdn.com.cn/zhuanzhuan/libs/zzapp/zzapp-0.0.1.min.js');
+    }else if (ZZUTIL.platform === 'app58') {
+        loadScript('http://j2.58cdn.com.cn/m58/app58/m_static/js/app.js');
+    } else if (ZZUTIL.platform === 'gj') {
+        loadScript('http://img.58cdn.com.cn/zhuanzhuan/zzactivity/ZZActivityUI/js/lib/GJNative.js');
+    }else if(ZZUTIL.platform === 'qq'){
+        loadScript('http://j1.58cdn.com.cn/qqm/js/lib/qqapi.js');
+    }
+</script>
+<script src="http://img.58cdn.com.cn/zhuanzhuan/mzz/js/lib/lginterface.js"></script>
+<script src="./share.js"></script>
+
+
+<script>
+
+    // 缓存选择器
+    var $share = $(".share");
+    var $diaoqi = $(".diaoqi");
+
+//    var _defaultHead = 'http://img.58cdn.com.cn/zhuanzhuan/zzactivity/activity620/css/images/icon-share.jpg';
+//    var _defaultName = '转转用户';
+
+    /*
+     * 分享参数
+     * 微信中授权需要调用‘http://zhuanzhuan.58.com/activity/comm/shouQuan?callbackUrl=’,
+     * cookie中携带uid，unionid，nickname，headimgurl
+
+     * shareMessage：分享配置参数；
+     */
+//    var callbackUrl = encodeURIComponent("http://m.zhuanzhuan.58.com/Mzhuanzhuan/zhuanzhuan/zzactivity/ZZActivityUI/html/demo2.0.html");
+//    var shareUrl = "http://zhuanzhuan.58.com/activity/comm/shouQuan?callbackUrl=" + callbackUrl;
+    var shareUrl = location.href;
+    var shareMessage = {
+        "type": "top_right",      //右上角分享参数 位置
+        "text": "分享",           //右上角分享参数 文案
+        "title": "分享标题",
+        "desc": "分享文案分享文案分享文案分享文案",
+        "shareUrl": shareUrl,
+        "imageUrl": "http://img.58cdn.com.cn/zhuanzhuan/zzactivity/ZZActivityUI/css/images/icon-share.jpg",
+        "logParam": "ZZSHARESUCESE", //大写   分享成功后要上报的参数（如主题id或好友在卖等活动标识）
+        "posterPicPath": "zhuanzhuan",       //分享海报底图地址
+        "panelType": "allChannel",   //分享面板类型 （allChannel：全渠道， onlyWeixin：只有微信、朋友圈）
+        "shareType": "common",       //分享类型（common：普通， poster：海报）
+        "buttonType": "icon",        //分享按钮类型 （icon：图标，label：文字）
+        "needLogin": "0"             //点击右侧按钮时是否需要登录 “0”：不需要登录 “1”：需要登录
+    };
+    // 业务逻辑
+    var logic = {
+        hideDiaoqi:function(){
+            if(ZZUTIL.platform === "zz"){
+                $diaoqi.addClass("none");
+            }
+        },
+        init:function(){
+            logic.hideDiaoqi();
+        }
+
+    };
+
+    // 绑定事件
+    var bindEvent = {
+        init: function () {
+            terminalEvent.setTitle(ZZUTIL.platform+"- 分享demo");
+            // 初始化分享
+            terminalEvent.share(shareMessage,function(){
+                alert("分享 成功");
+            },function(){
+                alert("分享 失败")
+            });  //可以传递回调   success, error
+
+            // 点击吊起 分享 面板
+            $share.on('click',function(){
+                terminalEvent.shareClick(shareMessage);
+            });
+
+        }
+    };
+    // 代码初始化
+    setTimeout(function(){
+        logic.init();
+        bindEvent.init();
+    },200)
+
+</script>
+
+
+</body>
+
+</html>
